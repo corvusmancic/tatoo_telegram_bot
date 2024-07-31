@@ -1,5 +1,5 @@
-const { startBut, city, order, valueCream, blancOrder, menegerContact, variantsAdress, confirmUserData, payment, yookasa } = require('./buttons.js');
-const { createPayment } = require('./payments.js');
+const { startBut, city, order, valueCream, variantsAdress, confirmUserData, payment, createButtonPay } = require('./buttons.js');
+const { createPay } = require('./payments.js');
 
 
 
@@ -15,6 +15,15 @@ const chatIdAdmin = '-1002117052881';
 const bot = new TelegramApi(token, { polling: true });
 
 const textMessege = 'Теперь давай заполним твои данные для доставки в формате:\n \n Фамилия Имя Отчество \n Адрес \n Номер телефона \n \n Данные нужно отправлять одним сообщением. Писать нужно полностью не сокращая ! '
+
+const paymentMessage = async (chatId) => {
+    const url = await createPay();
+    await bot.sendMessage(chatId, 
+        `Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. `,
+        createButtonPay(url) 
+    );
+    console.log(url)
+}
 
 
 const start = () => {
@@ -144,7 +153,8 @@ const start = () => {
             
             //тут идут способы оплаты
             case 'yookassa':
-                return  await bot.sendMessage(chatId, `Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. ${createPayment()}`);
+                return await paymentMessage(chatId);
+                //Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. 
         }
     });
     
