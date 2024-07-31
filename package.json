@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@a2seven/yoo-checkout": "^1.1.4",
     "node-telegram-bot-api": "^0.66.0",
-    "pm2": "^5.4.2"
+    "pm2": "^5.4.2",
+    "yookassa": "^0.1.1"
   }
 }

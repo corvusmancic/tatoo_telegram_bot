@@ -55,6 +55,33 @@ const blancOrder = {
     })
 }
 
+const confirmUserData = {
+    reply_markup: JSON.stringify({
+        inline_keyboard: [
+            [{ text: 'Подтверждаю введеные данные.', callback_data: 'payment' }],
+        ]
+    })
+
+}
+
+const payment = {
+    reply_markup: JSON.stringify({
+        inline_keyboard: [
+            [{ text: 'ЮКасса', callback_data: 'yookassa' }],
+        ]
+    })
+
+}
+
+const yookasa = {
+    reply_markup: JSON.stringify({
+        inline_keyboard: [
+            [{ text: 'Оплатить товар', callback_data: 'yookassa' }], //тут надо реализовать саму оплату при нажатии на кнопку
+        ]
+    })
+
+}
+
 const variantsAdress = {
     reply_markup: JSON.stringify({
         inline_keyboard: [
@@ -66,4 +93,4 @@ const variantsAdress = {
 }
 
 
-module.exports = { startBut, city, order, valueCream, blancOrder, menegerContact, variantsAdress }
+module.exports = { startBut, city, order, valueCream, blancOrder, menegerContact, variantsAdress, confirmUserData, payment, yookasa }
