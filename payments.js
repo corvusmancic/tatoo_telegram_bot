@@ -18,13 +18,12 @@ async function createPay(price) {
             value: price,
             currency: 'RUB'
         },
-        payment_method_data: {
-            type: 'bank_card'
-        },
         confirmation: {
             type: 'redirect',
             return_url: 'https://web.telegram.org/a/#6892019573'
-        }
+        },
+        capture: true,
+        description: 'Оплата товара с магазина Membrana.'
     };
     
     const idempotenceKey = uuidv4();
@@ -70,8 +69,6 @@ async function cancelPay(paymentId, key) {
          console.error(error);
     }
 }
-
-
 
 
 module.exports = { createPay, getPay, cancelPay };

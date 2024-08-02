@@ -23,7 +23,7 @@ let lastPayId = {id: undefined, key: undefined}
 let currentPrice = undefined
 
 const prices = {
-    '1ml': '1RUB',
+    '1ml': '1RUB',  
     '30ml': '700RUB',
     '250ml': '2000RUB',
     '280ml': '2500RUB'
