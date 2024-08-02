@@ -41,6 +41,7 @@ async function createPay(price) {
     }
 }
 
+
 async function getPay(paymentId) {
     try {
         const payment = await checkout.getPayment(paymentId);
