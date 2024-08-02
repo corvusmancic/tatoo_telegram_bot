@@ -195,7 +195,7 @@ const start = () => {
             //тут идут способы оплаты
             case 'yookassa':
                 if (!currentPrice) {
-                    return await bot.sendMessage(chatId, 'Товар не выбран, выберите товар', valueCream)
+                    return await bot.sendMessage(chatId, 'Если вы готовы приступить к оплате нажмите оплатить', valueCream)
                 }
                 return await paymentMessage(chatId).then(() => currentPrice = undefined)
                 //Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. 

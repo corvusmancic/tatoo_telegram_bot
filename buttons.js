@@ -68,7 +68,7 @@ const confirmUserData = {
 const payment = {
     reply_markup: JSON.stringify({
         inline_keyboard: [
-            [{ text: 'ЮКасса', callback_data: 'yookassa' }],
+            [{ text: 'Оплатить', callback_data: 'yookassa' }],
         ]
     })
 
