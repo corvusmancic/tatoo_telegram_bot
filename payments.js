@@ -10,31 +10,68 @@ const shopData = {
 
 const checkout = new YooCheckout({ shopId: shopData.shop_id, secretKey: shopData.secret_key });
 
-const createPayload = {
-    amount: {
-        value: '1.00',
-        currency: 'RUB'
-    },
-    payment_method_data: {
-        type: 'bank_card'
-    },
-    confirmation: {
-        type: 'redirect',
-        return_url: 'test'
-    }
-};
 
-async function createPay() {
+async function createPay(price) {
+
+    const createPayload = {
+        amount: {
+            value: price,
+            currency: 'RUB'
+        },
+        payment_method_data: {
+            type: 'bank_card'
+        },
+        confirmation: {
+            type: 'redirect',
+            return_url: 'https://web.telegram.org/a/#6892019573'
+        }
+    };
+    
     const idempotenceKey = uuidv4();
     try {
         const payment = await checkout.createPayment(createPayload, idempotenceKey);
-        return payment.confirmation.confirmation_url;
+        const infoPay = {
+            payment:  payment.confirmation.confirmation_url,
+            paymentId: payment.id,
+            key: idempotenceKey,
+        }
+        return infoPay;
     } catch (error) {
         console.error(error);
         throw error;
     }
 }
 
+async function getPay(paymentId) {
+    try {
+        const payment = await checkout.getPayment(paymentId);
+        return payment;
+    } catch (error) {
+         console.error(error);
+    }
+}
 
 
-module.exports = { createPay };
+
+async function getCheck() {
+    try {
+        const receipt = await checkout.getReceipt(receiptId);
+        return receipt;
+    } catch (error) {
+         console.error(error);
+    }
+}
+
+async function cancelPay(paymentId, key) {
+    try {
+        const receipt = await checkout.cancelPayment(paymentId, key);
+        return receipt;
+    } catch (error) {
+         console.error(error);
+    }
+}
+
+
+
+
+module.exports = { createPay, getPay, cancelPay };

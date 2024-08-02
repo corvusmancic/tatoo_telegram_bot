@@ -1,5 +1,5 @@
 const { startBut, city, order, valueCream, variantsAdress, confirmUserData, payment, createButtonPay } = require('./buttons.js');
-const { createPay } = require('./payments.js');
+const { createPay, getPay, cancelPay } = require('./payments.js');
 
 
 
@@ -15,14 +15,47 @@ const chatIdAdmin = '-1002117052881';
 const bot = new TelegramApi(token, { polling: true });
 
 const textMessege = 'Теперь давай заполним твои данные для доставки в формате:\n \n Фамилия Имя Отчество \n Адрес \n Номер телефона \n \n Данные нужно отправлять одним сообщением. Писать нужно полностью не сокращая ! '
+    
+let currentPay = undefined;
+let currentPayId = undefined;
+let lastPayId = {id: undefined, key: undefined}
+
+let currentPrice = undefined
+
+const prices = {
+    '1ml': '1RUB',
+    '30ml': '700RUB',
+    '250ml': '2000RUB',
+    '280ml': '2500RUB'
+}
 
 const paymentMessage = async (chatId) => {
-    const url = await createPay();
-    await bot.sendMessage(chatId, 
-        `Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. `,
-        createButtonPay(url) 
+    const payment = await createPay(currentPrice)
+    currentPayId = payment.paymentId;
+
+    const message = await bot.sendMessage(chatId, 
+        `Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. \n На произведение платежа выделено 10 минут, после чего платеж закроется. \n Если не успеете оплатить - повторите операцию. \n \n Сумма к оплате: ${currentPrice} рублей`,
+        createButtonPay(payment.payment) 
     );
-    console.log(url)
+    if (currentPay) {
+        await cancelPay(lastPayId.id, lastPayId.key).then(() => {
+            console.log(lastPayId)
+            lastPayId.id = undefined;
+            lastPayId.key = undefined;
+        })
+        await bot.deleteMessage(chatId, currentPay); // не засоряем оплату
+    }
+    
+    currentPay = message.message_id;
+    if (lastPayId.id === undefined) {
+        lastPayId.id = payment.paymentId;
+        lastPayId.key = payment.key;
+        console.log(lastPayId);
+    }
+}
+
+const checkPayment = () => {
+
 }
 
 
@@ -31,6 +64,7 @@ const start = () => {
     let localSity
     let localValue
     let inputDataOrder
+
     
     const undefinedFunction = () => {
         mskAdress = undefined
@@ -93,6 +127,12 @@ const start = () => {
         };
     
         const handleOrder = async (quantity) => {
+            const setPrice = () => {
+                currentPrice = prices[quantity].replace('RUB', '.00');
+            }
+
+            setPrice();
+            
             localValue = quantity;
             if (mskAdress) {
                 await handleAdminNotification(`Прилетела заявочка на самовывоз от \n@${from.username} \n Колличество: ${localValue}\n ${mskAdress}`);
@@ -138,6 +178,7 @@ const start = () => {
             case '280ml':
             case '250ml':
             case '30ml':
+            case '1ml':
                 return await handleOrder(data);
             case 'msk1':
                 mskAdress = 'Измайловское шоссе, 73ж';
@@ -153,8 +194,13 @@ const start = () => {
             
             //тут идут способы оплаты
             case 'yookassa':
-                return await paymentMessage(chatId);
+                if (!currentPrice) {
+                    return await bot.sendMessage(chatId, 'Товар не выбран, выберите товар', valueCream)
+                }
+                return await paymentMessage(chatId).then(() => currentPrice = undefined)
                 //Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. 
+            case 'checkPay':
+                return await bot.sendMessage(chatId, `Айди: ${getPay(currentPayId)}`);
         }
     });
     
