@@ -62,6 +62,15 @@ async function getCheck() {
     }
 }
 
+async function confirmPay(paymentId) {
+    try {
+        const payment = await checkout.getPayment(paymentId);
+        return payment;
+    } catch (error) {
+         console.error(error);
+    }
+}
+
 async function cancelPay(paymentId, key) {
     try {
         const receipt = await checkout.cancelPayment(paymentId, key);
@@ -72,4 +81,4 @@ async function cancelPay(paymentId, key) {
 }
 
 
-module.exports = { createPay, getPay, cancelPay };
+module.exports = { createPay, getPay, cancelPay, confirmPay };

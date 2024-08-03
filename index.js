@@ -1,15 +1,13 @@
 const { startBut, city, order, valueCream, variantsAdress, confirmUserData, payment, createButtonPay } = require('./buttons.js');
-const { createPay, getPay, cancelPay } = require('./payments.js');
-
-
+const { createPay, cancelPay, confirmPay } = require('./payments.js');
 
 const TelegramApi = require('node-telegram-bot-api');
 
 // const token = '7320665761:AAE_RpX9AjA1Kh147O4qu0RiQ2gMonu7U8U';
-//const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
+// const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
 const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
 
-//const chatIdAdmin = '-1002121086761';
+// const chatIdAdmin = '-1002121086761';
 const chatIdAdmin = '-1002117052881';
 
 const bot = new TelegramApi(token, { polling: true });
@@ -19,6 +17,7 @@ const textMessege = 'Теперь давай заполним твои данн�
 let currentPay = undefined;
 let currentPayId = undefined;
 let lastPayId = {id: undefined, key: undefined}
+let currentAdress = undefined;
 
 let currentPrice = undefined
 
@@ -39,7 +38,7 @@ const paymentMessage = async (chatId) => {
     );
     if (currentPay) {
         await cancelPay(lastPayId.id, lastPayId.key).then(() => {
-            console.log(lastPayId)
+            //console.log(lastPayId)
             lastPayId.id = undefined;
             lastPayId.key = undefined;
         })
@@ -50,12 +49,21 @@ const paymentMessage = async (chatId) => {
     if (lastPayId.id === undefined) {
         lastPayId.id = payment.paymentId;
         lastPayId.key = payment.key;
-        console.log(lastPayId);
+        //console.log(lastPayId);
     }
 }
 
-const checkPayment = () => {
-
+const checkPayment = async (chatId, chatIdAdmin, message) => {
+    const info = (await confirmPay(lastPayId.id))
+    if (info.status === 'pending') {
+        await bot.sendMessage(chatId, 'Оплата еще не прошла. Если вы оплатили попробуйте нажать кнопку чуть позже.')
+    } else if (info.status === 'succeeded') {
+        await bot.sendMessage(chatId, 'Оплата прошла успешно, в ближайшее время с вами свяжется менеджер.')
+        await bot.sendMessage(chatIdAdmin, message)
+        await bot.deleteMessage(chatId, currentPay)
+        
+    }
+    console.log(info.status)
 }
 
 
@@ -104,6 +112,7 @@ const start = () => {
     
         if (text.length > 23) {
             const inputDataOrder = text;
+            currentAdress = inputDataOrder;
             return await bot.sendMessage(
                 chatId,
                 `Внимательно проверьте ваши данные по заказу: \n \n ${inputDataOrder}`, 
@@ -190,7 +199,7 @@ const start = () => {
                 mskAdress = 'Марии Ульяновой 16';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
             case 'payment':
-                return await bot.sendMessage(chatId, 'Выберите удобный способ оплаты:', payment);
+                return await bot.sendMessage(chatId, 'Перейти к оплате:', payment);
             
             //тут идут способы оплаты
             case 'yookassa':
@@ -200,7 +209,8 @@ const start = () => {
                 return await paymentMessage(chatId).then(() => currentPrice = undefined)
                 //Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. 
             case 'checkPay':
-                return await bot.sendMessage(chatId, `Айди: ${getPay(currentPayId)}`);
+                const message = `Прилетела заявочка на доставку от \n@${from.username} \n ${currentAdress} \n Колличество: ${localValue}\n ${localSity ? 'Город: ' + localSity : '' } \n \n Товар был оплачен онлайн.`
+                return await checkPayment(chatId, chatIdAdmin, message)
         }
     });
     
