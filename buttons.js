@@ -17,7 +17,7 @@ const menegerContact = {
 const city = {
     reply_markup: JSON.stringify({
         inline_keyboard: [
-            [{ text: 'Москва', callback_data: 'msk' }, { text: 'Петербург', callback_data: 'spb' }],
+            [{ text: 'Москва', callback_data: 'msk' }, { text: 'Петербург', callback_data: 'spb' }, {text: 'Воронеж', callback_data: 'voronej' }],
             [{ text: 'Доставкой по России', callback_data: 'castomSity' }]
 
         ]
@@ -91,13 +91,22 @@ const createButtonPay = (payUrl) => {
 
 
 const variantsAdress = {
-    reply_markup: JSON.stringify({
-        inline_keyboard: [
-            [{ text: '1', callback_data: 'msk1' }],
-            [{ text: '2', callback_data: 'msk2' }],
-            [{ text: '3', callback_data: 'msk3' }],
-        ]
-    })
+    Moscow: {
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                [{ text: '1', callback_data: 'msk1' }],
+                [{ text: '2', callback_data: 'msk2' }],
+                [{ text: '3', callback_data: 'msk3' }],
+            ]
+        })
+    },
+    Voronej: {
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                [{ text: 'Хорошо', callback_data: 'voronejCity' }],
+            ]
+        })
+    }
 }
 
 

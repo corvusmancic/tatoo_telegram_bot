@@ -103,7 +103,8 @@ const start = () => {
                 lastPayId: {id: undefined, key: undefined},
                 currentAdress: undefined,
                 currentPrice: undefined,
-                currentCity: undefined,
+                currentCity: null,
+                currentCount: null
             }
         }
     
@@ -133,7 +134,8 @@ const start = () => {
             users[chatId].currentAdress = inputDataOrder;
             return await bot.sendMessage(
                 chatId,
-                `Внимательно проверьте ваши данные по заказу: \n \n ${inputDataOrder}`, 
+                `Внимательно проверьте ваши данные по заказу: Город: ${users[chatId].currentCity? users[chatId].currentCity : 'доставка по России'} 
+                \n Стоимость: ${users[chatId].currentPrice? users[chatId].currentCount : 'Данные не указаны повторите заново'} \n Количество: ${users[chatId].currentCount? users[chatId].currentCount: 'Данные не указаны повторите заново'} \n \n ${inputDataOrder}`, 
                 confirmUserData);
             //return await handleAdminNotification(`Прилетела заявочка от \n@${from.username} \n ${inputDataOrder} \n Колличество: ${localValue}\n ${localSity ? 'Город: ' + localSity : ''}`);
         }
@@ -156,6 +158,7 @@ const start = () => {
         const handleOrder = async (quantity) => {
             const setPrice = () => {
                 users[chatId].currentPrice = prices[quantity].replace('RUB', '.00');
+                users[chatId].currentCount = quantity;
             }
 
             setPrice();
@@ -183,12 +186,26 @@ const start = () => {
                 localSity = 'Санкт-Петербург';
                 users[chatId].currentCity = 'Санкт-Петербург';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
+            case 'voronej': 
+                localSity = 'Воронеж';
+                localSity = 'Воронеж';
+                users[chatId].currentCity = 'Воронеж';
+                return await bot.sendMessage(chatId, 'Теперь давай определимся как тебе удобнее забрать товар', order);
             case 'dontOrder':
-                return await bot.sendMessage(
-                    chatId,
-                    'Забрать наш чудо-крем в Москве можно по адресам: \n 1. Москва, Измайловское шоссе, 73ж \n 2. Ленинградский проспект 36 строение 38 \n 3. Марии Ульяновой 16 \n \n Выбери вариант где тебе удобнее забрать',
-                    variantsAdress
-                );
+                if(users[chatId].currentCity === 'Москва') {
+                    return await bot.sendMessage(
+                        chatId,
+                        'Забрать наш чудо-крем в Москве можно по адресам: \n 1. Москва, Измайловское шоссе, 73ж \n 2. Ленинградский проспект 36 строение 38 \n 3. Марии Ульяновой 16 \n \n Выбери вариант где тебе удобнее забрать',
+                        variantsAdress.Moscow
+                    );
+                } else {
+                    return await bot.sendMessage(
+                        chatId,
+                        'Забрать наш чудо-крем в Воронеже можно по адресу: \n Воронеж, Ленина 43',
+                        variantsAdress.Voronej
+                    )
+                }
+                
             case 'castomSity':
             case 'localShopMoscow':
             case 'startBlanc':
@@ -209,6 +226,12 @@ const start = () => {
             case '30ml':
             case '1ml':
                 return await handleOrder(data);
+            case 'voronejCity': 
+                mskAdress = 'Воронеж, Ленина 43';
+                return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
+            case 'voronej': 
+                mskAdress = 'Воронеж, Ленина 43'
+                return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
             case 'msk1':
                 mskAdress = 'Измайловское шоссе, 73ж';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
@@ -229,7 +252,7 @@ const start = () => {
                 return await paymentMessage(chatId).then(() => users[chatId].currentPrice = undefined)
                 //Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. 
             case 'checkPay':
-                const message = `Прилетела заявочка на доставку от \n@${from.username} \n ${users[chatId].currentAdress} \n Колличество: ${localValue}\n ${users[chatId].currentCity ? 'Город: ' + users[chatId].currentCity : '' } \n \n Товар был оплачен онлайн.`
+                const message = `Прилетела заявочка на доставку от \n@${from.username} \n ${users[chatId].currentAdress} \n Колличество: ${localValue}\n ${users[chatId].currentCity ? 'Город: ' + users[chatId].currentCity : 'Доставка по России' } \n \n Товар был оплачен онлайн.`
                 return await checkPayment(chatId, chatIdAdmin, message)
         }
     });
