@@ -37,7 +37,7 @@ const paymentMessage = async (chatId) => {
     users[chatId].currentPayId = payment.paymentId;
 
     const message = await bot.sendMessage(chatId, 
-        `Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. \n На произведение платежа выделено 10 минут, после чего платеж закроется. \n Если не успеете оплатить - повторите операцию. \n \n Сумма к оплате: ${users[chatId].currentPrice} рублей`,
+        `Оплатите товар нажатием на кнопку 'Оплатить'. \n На произведение платежа выделено 10 минут, после чего платеж закроется. \n Если не успеете оплатить - повторите операцию. \n \n Сумма к оплате: ${users[chatId].currentPrice} рублей`,
         createButtonPay(payment.payment) 
     );
     if (users[chatId].currentPay) {
