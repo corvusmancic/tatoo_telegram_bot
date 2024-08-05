@@ -40,13 +40,13 @@ const paymentMessage = async (chatId) => {
         `Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. \n На произведение платежа выделено 10 минут, после чего платеж закроется. \n Если не успеете оплатить - повторите операцию. \n \n Сумма к оплате: ${users[chatId].currentPrice} рублей`,
         createButtonPay(payment.payment) 
     );
-    if (currentPay) {
+    if (users[chatId].currentPay) {
         await cancelPay(users[chatId].lastPayId.id, users[chatId].lastPayId.key).then(() => {
             //console.log(lastPayId)
             users[chatId].lastPayId.id = undefined;
             users[chatId].lastPayId.key = undefined;
         })
-        await bot.deleteMessage(chatId, currentPay); // не засоряем оплату
+        await bot.deleteMessage(chatId, users[chatId].currentPay); // не засоряем оплату
     }
     
     users[chatId].currentPay = message.message_id;
@@ -109,9 +109,7 @@ const start = () => {
         }
     
         
-        const handleAdminNotification = (message) => {
-            return bot.sendMessage(chatIdAdmin, message);
-        };
+        const handleAdminNotification = (message) => bot.sendMessage(chatIdAdmin, message)
     
         if (text === '/start') {
             return await bot.sendMessage(
@@ -187,7 +185,6 @@ const start = () => {
                 users[chatId].currentCity = 'Санкт-Петербург';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
             case 'voronej': 
-                localSity = 'Воронеж';
                 localSity = 'Воронеж';
                 users[chatId].currentCity = 'Воронеж';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся как тебе удобнее забрать товар', order);
