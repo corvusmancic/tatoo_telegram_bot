@@ -3,11 +3,11 @@ const { createPay, cancelPay, confirmPay } = require('./payments.js');
 const TelegramApi = require('node-telegram-bot-api');
 
 // const token = '7320665761:AAE_RpX9AjA1Kh147O4qu0RiQ2gMonu7U8U';
-// const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
-const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
+const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
+// const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
 
-// const chatIdAdmin = '-1002121086761';
-const chatIdAdmin = '-1002117052881';
+const chatIdAdmin = '-1002121086761';
+// const chatIdAdmin = '-1002117052881';
 
 const bot = new TelegramApi(token, { polling: true });
 
@@ -114,7 +114,7 @@ const start = () => {
         if (text === '/start') {
             return await bot.sendMessage(
                 chatId,
-                'Добро пожаловать в бота команды Membrana, в данном боте вы можете c лёгкостью заказать увлажняющий крем для ваших тату)',
+                'Добро пожаловать в бота команды MEMBRANA, в данном боте вы можете c лёгкостью заказать многофункциональный крем)',
                 startBut
             );
         }
@@ -133,7 +133,7 @@ const start = () => {
             return await bot.sendMessage(
                 chatId,
                 `Внимательно проверьте ваши данные по заказу: Город: ${users[chatId].currentCity? users[chatId].currentCity : 'доставка по России'} 
-                \n Стоимость: ${users[chatId].currentPrice? users[chatId].currentCount : 'Данные не указаны повторите заново'} \n Количество: ${users[chatId].currentCount? users[chatId].currentCount: 'Данные не указаны повторите заново'} \n \n ${inputDataOrder}`, 
+                \n Стоимость: ${users[chatId].currentPrice? users[chatId].currentPrice : 'Данные не указаны повторите заново'} \n Количество: ${users[chatId].currentCount? users[chatId].currentCount: 'Данные не указаны повторите заново'} \n \n ${inputDataOrder}`, 
                 confirmUserData);
             //return await handleAdminNotification(`Прилетела заявочка от \n@${from.username} \n ${inputDataOrder} \n Колличество: ${localValue}\n ${localSity ? 'Город: ' + localSity : ''}`);
         }

@@ -23,7 +23,7 @@ async function createPay(price) {
             return_url: 'https://web.telegram.org/a/#6892019573'
         },
         capture: true,
-        description: 'Оплата товара с магазина Membrana.'
+        description: 'Оплата товара с магазина MEMBRANA'
     };
     
     const idempotenceKey = uuidv4();
