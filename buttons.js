@@ -40,7 +40,6 @@ const valueCream = {
         inline_keyboard: [
             [{ text: '30ml (700р)', callback_data: '30ml' }, { text: '250ml (2000р)' , callback_data: '250ml' }],
             [{ text: '30 + 250 (2500р)', callback_data: '280ml' }],
-            // [{ text: 'test 1 rub', callback_data: '1ml'}],
             [{ text: 'Любое другое колличество', callback_data: 'optValue' }]
 
         ]
