@@ -79,6 +79,7 @@ const start = () => {
         localSity = undefined
         localValue = undefined
         inputDataOrder = undefined
+        samovivoz = false
     }
 
     bot.setMyCommands([
@@ -106,7 +107,7 @@ const start = () => {
         const handleAdminNotification = (message) => bot.sendMessage(chatIdAdmin, message)
     
         if (text === '/start') {
-            samovivoz = false
+            undefinedFunction()
             return await bot.sendMessage(
                 chatId,
                 'Добро пожаловать в бота команды MEMBRANA, в данном боте вы можете c лёгкостью заказать многофункциональный крем)',
