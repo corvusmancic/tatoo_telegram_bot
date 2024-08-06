@@ -2,7 +2,6 @@ const { startBut, city, order, valueCream, variantsAdress, confirmUserData, paym
 const { createPay, cancelPay, confirmPay } = require('./payments.js');
 const TelegramApi = require('node-telegram-bot-api');
 
-// const token = '7320665761:AAE_RpX9AjA1Kh147O4qu0RiQ2gMonu7U8U';
 const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
 // const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
 
@@ -12,13 +11,8 @@ const chatIdAdmin = '-1002121086761';
 const bot = new TelegramApi(token, { polling: true });
 
 const textMessege = 'Теперь давай заполним твои данные для доставки в формате:\n \n Фамилия Имя Отчество \n Адрес \n Номер телефона \n \n Данные нужно отправлять одним сообщением. Писать нужно полностью не сокращая ! '
-    
-// let currentPay = undefined;
-// let currentPayId = undefined;
-// let lastPayId = {id: undefined, key: undefined}
-// let currentAdress = undefined;
-// let currentPrice = undefined;
-
+const textMessege2 = 'Теперь давай заполним твои данные в формате:\n \n Фамилия Имя Отчество \n Номер телефона \n \n Данные нужно отправлять одним сообщением. Писать нужно полностью не сокращая ! '
+let samovivoz = false
 const users = {
 
 }
@@ -112,6 +106,7 @@ const start = () => {
         const handleAdminNotification = (message) => bot.sendMessage(chatIdAdmin, message)
     
         if (text === '/start') {
+            samovivoz = false
             return await bot.sendMessage(
                 chatId,
                 'Добро пожаловать в бота команды MEMBRANA, в данном боте вы можете c лёгкостью заказать многофункциональный крем)',
@@ -133,7 +128,7 @@ const start = () => {
             return await bot.sendMessage(
                 chatId,
                 `Внимательно проверьте ваши данные по заказу: Город: ${users[chatId].currentCity? users[chatId].currentCity : 'доставка по России'} 
-                \n Стоимость: ${users[chatId].currentPrice? users[chatId].currentPrice : 'Данные не указаны повторите заново'} \n Количество: ${users[chatId].currentCount? users[chatId].currentCount: 'Данные не указаны повторите заново'} \n \n ${inputDataOrder}`, 
+                \n Стоимость: ${users[chatId].currentPrice? users[chatId].currentPrice : 'Данные не указаны повторите заново'} \n Количество: ${users[chatId].currentCount? users[chatId].currentCount: 'Данные не указаны повторите заново'} \n \n ${inputDataOrder} ${samovivoz ? '' : '\n \n Оставайтесь, пожалуйста, на связи: наш менеджер напишет Вам для уточнения деталей доставки (время и стоимость по текущему тарифу Яндекс-Курьер/Достависта)'}`, 
                 confirmUserData);
             //return await handleAdminNotification(`Прилетела заявочка от \n@${from.username} \n ${inputDataOrder} \n Колличество: ${localValue}\n ${localSity ? 'Город: ' + localSity : ''}`);
         }
@@ -163,9 +158,8 @@ const start = () => {
             
             localValue = quantity;
             if (mskAdress) {
-                await handleAdminNotification(`Прилетела заявочка на самовывоз от \n@${from.username} \n Колличество: ${localValue}\n ${mskAdress}`);
-                undefinedFunction(); 
-                return await bot.sendMessage(chatId, 'Мы в ближайшее время с вами свяжемся, для подтверждения заказа, оставайтесь на связи ;)');
+                samovivoz = true
+                return await bot.sendMessage(chatId, textMessege2);
             }
             return await bot.sendMessage(chatId, textMessege);
         };
@@ -189,6 +183,7 @@ const start = () => {
                 users[chatId].currentCity = 'Воронеж';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся как тебе удобнее забрать товар', order);
             case 'dontOrder':
+                samovivoz = true
                 if(users[chatId].currentCity === 'Москва') {
                     return await bot.sendMessage(
                         chatId,
@@ -196,6 +191,7 @@ const start = () => {
                         variantsAdress.Moscow
                     );
                 } else {
+                samovivoz = true
                     return await bot.sendMessage(
                         chatId,
                         'Забрать наш чудо-крем в Воронеже можно по адресу: \n Воронеж, Ленина 43',
@@ -216,7 +212,7 @@ const start = () => {
                 }
                 return await bot.sendMessage(
                     chatId,
-                    'Теперь давай заполним твои данные для доставки в формате:\n \n Фамилия Имя Отчество \n Город Адрес \n Номер телефона \n \n Данные нужно отправлять одним сообщением. Писать нужно полностью не сокращая !'
+                    `Теперь давай заполним твои данные для доставки в формате:\n \n Фамилия Имя Отчество \n Город Адрес \n Номер телефона \n \n Данные нужно отправлять одним сообщением. Писать нужно полностью не сокращая !`
                 );
             case '280ml':
             case '250ml':
@@ -239,7 +235,7 @@ const start = () => {
                 mskAdress = 'Марии Ульяновой 16';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
             case 'payment':
-                return await bot.sendMessage(chatId, 'Перейти к оплате:', payment);
+                return await bot.sendMessage(chatId, 'Перейти к оплате заказа, пожалуй, одного из лучших кремов на планете Земля', payment);
             
             //тут идут способы оплаты
             case 'yookassa':
