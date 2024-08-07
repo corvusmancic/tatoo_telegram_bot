@@ -1,12 +1,12 @@
-const { startBut, city, order, valueCream, variantsAdress, confirmUserData, payment, createButtonPay } = require('./buttons.js');
+const { startBut, city, order, valueCream, variantsAdress, confirmUserData, payment, createButtonPay, homeButton } = require('./buttons.js');
 const { createPay, cancelPay, confirmPay } = require('./payments.js');
 const TelegramApi = require('node-telegram-bot-api');
 
-const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
-// const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
+// const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
+const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
 
-const chatIdAdmin = '-1002121086761';
-// const chatIdAdmin = '-1002117052881';
+// const chatIdAdmin = '-1002121086761';
+const chatIdAdmin = '-1002117052881';
 
 const bot = new TelegramApi(token, { polling: true });
 
@@ -166,6 +166,13 @@ const start = () => {
         };
     
         switch (data) {
+            case 'homeBut':
+                undefinedFunction()
+                return await bot.sendMessage(
+                    chatId,
+                    'Добро пожаловать в бота команды MEMBRANA, в данном боте вы можете c лёгкостью заказать многофункциональный крем)',
+                    startBut
+                );
             case '001':
                 return await bot.sendMessage(chatId, 'Выбери свой город', city);
             case '002':
@@ -236,6 +243,10 @@ const start = () => {
                 mskAdress = 'Марии Ульяновой 16';
                 return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
             case 'payment':
+                if(localValue === 'Другое количество') {
+                    handleAdminNotification(`Прилела заявка на оптовое колличество, требуется участие менеджера. Контакт: @${from.username} \n Данные клиента: \n${inputDataOrder}` )
+                    return await bot.sendMessage(chatId, 'Пожалуйста ожидайте, в скором времени с вами свяжется менеджер для уточнения точного количества и согасования цены.', homeButton)
+                }
                 return await bot.sendMessage(chatId, 'Перейти к оплате заказа, пожалуй, одного из лучших кремов на планете Земля', payment);
             
             //тут идут способы оплаты

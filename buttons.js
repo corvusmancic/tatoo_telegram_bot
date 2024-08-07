@@ -14,6 +14,14 @@ const menegerContact = {
     })
 }
 
+const homeButton = {
+    reply_markup: JSON.stringify({
+        inline_keyboard: [
+            [{ text: 'Вернуться в начало', callback_data: 'homeBut' }],
+        ]
+    })
+}
+
 const city = {
     reply_markup: JSON.stringify({
         inline_keyboard: [
@@ -109,4 +117,4 @@ const variantsAdress = {
 }
 
 
-module.exports = { startBut, city, order, valueCream, blancOrder, menegerContact, variantsAdress, confirmUserData, payment, createButtonPay }
+module.exports = { startBut, city, order, valueCream, blancOrder, menegerContact, variantsAdress, confirmUserData, payment, createButtonPay, homeButton}
