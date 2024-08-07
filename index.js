@@ -2,11 +2,11 @@ const { startBut, city, order, valueCream, variantsAdress, confirmUserData, paym
 const { createPay, cancelPay, confirmPay } = require('./payments.js');
 const TelegramApi = require('node-telegram-bot-api');
 
-// const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
-const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
+const token = '6937786912:AAG5kxs3uO1MnOSS-5cBjrQh7nTf1qOozrM';
+// const token = '6892019573:AAG0TuLjDjYrm4_nvoj1lEjk3Q13fFlV0i8';
 
-// const chatIdAdmin = '-1002121086761';
-const chatIdAdmin = '-1002117052881';
+const chatIdAdmin = '-1002121086761';
+// const chatIdAdmin = '-1002117052881';
 
 const bot = new TelegramApi(token, { polling: true });
 
