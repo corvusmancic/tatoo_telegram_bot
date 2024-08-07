@@ -131,7 +131,6 @@ const start = () => {
                 `Внимательно проверьте ваши данные по заказу: Город: ${users[chatId].currentCity? users[chatId].currentCity : 'доставка по России'} 
                 \n Стоимость: ${users[chatId].currentPrice? users[chatId].currentPrice : 'Данные не указаны повторите заново'} \n Количество: ${users[chatId].currentCount? users[chatId].currentCount: 'Данные не указаны повторите заново'} \n \n ${inputDataOrder} ${samovivoz ? '' : '\n \n Оставайтесь, пожалуйста, на связи: наш менеджер напишет Вам для уточнения деталей доставки (время и стоимость по текущему тарифу Яндекс-Курьер/Достависта)'}`, 
                 confirmUserData);
-            //return await handleAdminNotification(`Прилетела заявочка от \n@${from.username} \n ${inputDataOrder} \n Колличество: ${localValue}\n ${localSity ? 'Город: ' + localSity : ''}`);
         }
     
         return await bot.sendMessage(
@@ -214,7 +213,7 @@ const start = () => {
             case 'optValue':
                 localValue = 'Другое количество';
                 if (mskAdress) {
-                    await handleAdminNotification(`Прилетела заявочка на самовывоз от \n@${from.username} \n Колличество: ${localValue}\n ${mskAdress}`);
+                    await handleAdminNotification(`Прилетела заявочка на самовывоз от \n@${from.username} \n Количество: ${localValue}\n ${mskAdress}`);
                     undefinedFunction();
                     return await bot.sendMessage(chatId, 'Мы в ближайшее время с вами свяжемся, для подтверждения заказа, оставайтесь на связи ;)');
                 }
@@ -244,7 +243,7 @@ const start = () => {
                 return await bot.sendMessage(chatId, 'Теперь давай определимся с количеством', valueCream);
             case 'payment':
                 if(localValue === 'Другое количество') {
-                    handleAdminNotification(`Прилела заявка на оптовое колличество, требуется участие менеджера. Контакт: @${from.username} \n Данные клиента: \n${inputDataOrder}` )
+                    handleAdminNotification(`Прилела заявка на оптовое количество, требуется участие менеджера. Контакт: @${from.username} \n Данные клиента: \n${users[chatId].currentAdress}` )
                     return await bot.sendMessage(chatId, 'Пожалуйста ожидайте, в скором времени с вами свяжется менеджер для уточнения точного количества и согасования цены.', homeButton)
                 }
                 return await bot.sendMessage(chatId, 'Перейти к оплате заказа, пожалуй, одного из лучших кремов на планете Земля', payment);
@@ -257,7 +256,7 @@ const start = () => {
                 return await paymentMessage(chatId).then(() => users[chatId].currentPrice = undefined)
                 //Вы выбрали способ оплаты ЮКасса, оплатите товар нажатием на кнопку 'Оплатить'. На произведение платежа выделено 10 минут, после чего платеж закроется. Если не успеете оплатить - повторите операцию. 
             case 'checkPay':
-                const message = `Прилетела заявочка на доставку от \n@${from.username} \n ${users[chatId].currentAdress} \n Колличество: ${localValue}\n ${users[chatId].currentCity ? 'Город: ' + users[chatId].currentCity : 'Доставка по России' } \n \n Товар был оплачен онлайн.`
+                const message = `Прилетела заявочка на доставку от \n@${from.username} \n ${users[chatId].currentAdress} \n Количество: ${localValue}\n ${users[chatId].currentCity ? 'Город: ' + users[chatId].currentCity : 'Доставка по России' } \n \n Товар был оплачен онлайн.`
                 return await checkPayment(chatId, chatIdAdmin, message)
         }
     });
