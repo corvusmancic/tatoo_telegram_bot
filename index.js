@@ -21,7 +21,7 @@ const users = {
 
 const prices = {
     '1ml': '1RUB',  
-    '30ml': '700RUB',
+    '30ml': '800RUB',
     '250ml': '2000RUB',
     '280ml': '2500RUB'
 }

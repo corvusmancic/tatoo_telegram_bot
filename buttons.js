@@ -46,7 +46,7 @@ const order = {
 const valueCream = {
     reply_markup: JSON.stringify({
         inline_keyboard: [
-            [{ text: '30ml (700р)', callback_data: '30ml' }, { text: '250ml (2000р)' , callback_data: '250ml' }],
+            [{ text: '30ml (800р)', callback_data: '30ml' }, { text: '250ml (2000р)' , callback_data: '250ml' }],
             [{ text: '30 + 250 (2500р)', callback_data: '280ml' }],
             [{ text: 'Любое другое колличество', callback_data: 'optValue' }]
 
